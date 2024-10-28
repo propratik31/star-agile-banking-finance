@@ -3,7 +3,7 @@ pipeline {
 
     tools {
         // Install the Maven version configured as "M3" and add it to the path.
-        maven "/usr/share/maven"
+        maven "M2_HOME"
     }
 
     stages {
@@ -19,24 +19,24 @@ pipeline {
         }
        stage('Generate Test Reports') {
            steps {
-               publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '/var/lib/jenkins/workspace/Banking_project/target/surefire-reports', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+               publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: '/var/lib/jenkins/workspace/BankingProject/target/surefire-reports', reportFiles: 'index.html', reportName: 'HTML Report', reportTitles: '', useWrapperFileDirectly: true])
                     }
             }
        stage('Create Docker Image') {
            steps {
-               sh 'docker build -t pratikpro/banking-project-demo:3.0 .'
+               sh 'docker build -t pratikpro/banking-project-demo:1.0 .'
                     }
                 }
        stage('Docker-Login') {
            steps {
-               withCredentials([usernamePassword(credentialsId: 'Docker-login', passwordVariable: 'dockerpassword', usernameVariable: 'dockerlogin')]) { 
+               withCredentials([usernamePassword(credentialsId: 'Docker-login', passwordVariable: 'dockerpassword', usernameVariable: 'dockerlogin')])  { 
                sh 'docker login -u ${dockerlogin} -p ${dockerpassword}'
                                    }
                         }
                 }
        stage('Push-Image') {
            steps {
-               sh 'docker push cbabu85/banking-project-demo:3.0'
+               sh 'docker push pratikpro/banking-project-demo:1.0'
                      }
                 }
        stage('Config & Deployment') {
